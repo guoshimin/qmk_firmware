@@ -19,6 +19,7 @@ enum layers {
     _QWERTY = 0,
     _DVORAK,
     _COLEMAK_DH,
+    _MTGAP,
     _NAV,
     _SYM,
     _FUNCTION,
@@ -30,6 +31,7 @@ enum layers {
 #define QWERTY   DF(_QWERTY)
 #define COLEMAK  DF(_COLEMAK_DH)
 #define DVORAK   DF(_DVORAK)
+#define MTGAP    DF(_MTGAP)
 
 #define SYM      MO(_SYM)
 #define NAV      MO(_NAV)
@@ -111,6 +113,27 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
     ),
 
 /*
+ * Base Layer: MTGAP
+ *
+ * ,-------------------------------------------.                              ,-------------------------------------------.
+ * |  Tab   | . >  |   P  |   O  |   U  | : ;  |                              | Bksp |   D  |   L  |   C  |   W  |    J   |
+ * |--------+------+------+------+------+------|                              |------+------+------+------+------+--------|
+ * |Ctrl/Esc|   I  |   N  |   E  |   A  | , <  |                              |   M  |   H  |   T  |   S  |   R  |  ' "   |
+ * |--------+------+------+------+------+------+-------------.  ,-------------+------+------+------+------+------+--------|
+ * | LShift |   Z  |   K  |   C  |   Y  |   X  | [ {  |  Q   |  |F-keys|  ] } |   B  |   F  |   V  |   G  | /  ? | RShift |
+ * `----------------------+------+------+------+------+------|  |------+------+------+------+------+----------------------'
+ *                        |Adjust| LGUI | LAlt/| Space| Nav  |  | Sym  | Space| AltGr| RGUI | Menu |
+ *                        |      |      | Enter|      |      |  |      |      |      |      |      |
+ *                        `----------------------------------'  `----------------------------------'
+ */
+    [_MTGAP] = LAYOUT(
+     KC_TAB  , KC_DOT ,  KC_P   ,  KC_O  ,   KC_U ,   KC_SCLN ,                                        KC_BSPC,   KC_D ,  KC_L ,   KC_C ,KC_W, KC_J,
+     CTL_ESC , KC_I ,  KC_N   ,  KC_E  ,   KC_A ,   KC_COMM ,                                        KC_M,   KC_H ,  KC_T ,   KC_S ,  KC_R , KC_QUOTE,
+     KC_LSFT , KC_Z ,  KC_K   ,  KC_EQL  ,   KC_Y ,   KC_X , KC_LBRC,KC_Q,     FKEYS  , KC_RBRC, KC_B,   KC_F ,KC_V, KC_G ,KC_SLSH, KC_RSFT,
+                                 ADJUST, KC_LGUI, ALT_ENT, KC_SPC , NAV   ,     SYM    , KC_SPC ,KC_RALT, KC_RGUI, KC_APP
+    ),
+
+/*
  * Nav Layer: Media, navigation
  *
  * ,-------------------------------------------.                              ,-------------------------------------------.
@@ -146,7 +169,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
  *                        `----------------------------------'  `----------------------------------'
  */
     [_SYM] = LAYOUT(
-      KC_GRV ,   KC_1 ,   KC_2 ,   KC_3 ,   KC_4 ,   KC_5 ,                                       KC_6 ,   KC_7 ,   KC_8 ,   KC_9 ,   KC_0 , KC_EQL ,
+      KC_GRV ,   KC_1 ,   KC_2 ,   KC_3 ,   KC_4 ,   KC_5 ,                                       KC_6 ,   KC_7 ,   KC_8 ,   KC_9 ,   KC_0 , KC_Q ,
      KC_TILD , KC_EXLM,  KC_AT , KC_HASH,  KC_DLR, KC_PERC,                                     KC_CIRC, KC_AMPR, KC_ASTR, KC_LPRN, KC_RPRN, KC_PLUS,
      KC_PIPE , KC_BSLS, KC_COLN, KC_SCLN, KC_MINS, KC_LBRC, KC_LCBR, _______, _______, KC_RCBR, KC_RBRC, KC_UNDS, KC_COMM,  KC_DOT, KC_SLSH, KC_QUES,
                                  _______, _______, _______, _______, _______, _______, _______, _______, _______, _______
@@ -188,7 +211,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
  *                        `----------------------------------'  `----------------------------------'
  */
     [_ADJUST] = LAYOUT(
-      _______, _______, _______, QWERTY , _______, _______,                                    _______, _______, _______, _______,  _______, _______,
+      _______, _______, _______, QWERTY , MTGAP  , _______,                                    _______, _______, _______, _______,  _______, _______,
       _______, _______, _______, DVORAK , _______, _______,                                    RGB_TOG, RGB_SAI, RGB_HUI, RGB_VAI,  RGB_MOD, _______,
       _______, _______, _______, COLEMAK, _______, _______,_______, _______, _______, _______, _______, RGB_SAD, RGB_HUD, RGB_VAD, RGB_RMOD, _______,
                                  _______, _______, _______,_______, _______, _______, _______, _______, _______, _______
@@ -222,7 +245,6 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
  * DO NOT edit the rev1.c file; instead override the weakly defined default functions by your own.
  */
 
-/* DELETE THIS LINE TO UNCOMMENT (1/2)
 #ifdef OLED_ENABLE
 oled_rotation_t oled_init_user(oled_rotation_t rotation) { return OLED_ROTATION_180; }
 
@@ -250,6 +272,9 @@ bool oled_task_user(void) {
                 break;
             case _COLEMAK_DH:
                 oled_write_P(PSTR("Colemak-DH\n"), false);
+                break;
+            case _MTGAP:
+                oled_write_P(PSTR("MTGAP\n"), false);
                 break;
             case _NAV:
                 oled_write_P(PSTR("Nav\n"), false);
@@ -312,4 +337,3 @@ bool encoder_update_user(uint8_t index, bool clockwise) {
     return false;
 }
 #endif
-DELETE THIS LINE TO UNCOMMENT (2/2) */
